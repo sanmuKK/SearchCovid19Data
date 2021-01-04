@@ -12,10 +12,29 @@ public class AnalyzeJson {
         for (String countryName : countriesName) {
             JSONObject countryData = data.getJSONObject(countryName);
             JSONObject countryAllData = countryData.getJSONObject("All");
-            int countryId = saveDataAll(countryAllData); // 解析All部分数据并返回自增主键值
-            countryData.remove("All");
-            for (String key : countryData.keySet()) {
-                saveDataProvince(countryData.getJSONObject(key), key, countryId);// 解析其他部分数据
+            Connection conn = ConnectMysql.getConnection();
+            try { // 事务管理
+                conn.setAutoCommit(false);
+                int countryId = saveDataAll(countryAllData); // 解析All部分数据并返回自增主键值
+                countryData.remove("All");
+                for (String key : countryData.keySet()) {
+                    saveDataProvince(countryData.getJSONObject(key), key, countryId);// 解析其他部分数据
+                }
+                conn.commit();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                try {
+                    conn.rollback();
+                } catch (SQLException e2) {
+                    e2.printStackTrace();
+                }
+            } finally {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
