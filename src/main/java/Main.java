@@ -17,12 +17,24 @@ public class Main {
             choice = input.nextInt();
             if (choice == 1) {
                 AnalyzeJson.saveData(url, countriesName);
-                System.out.println("更新成功");
+                System.out.println("OK!");
             } else if (choice == 2) {
                 input.nextLine();
-                System.out.println("请输入要查询的城市名称:");
-                String province = input.nextLine();
-                JSONArray result = QueryData.queryData(province);
+                int choice2 = 0;
+                System.out.println("查询国家请输入4,查询城市请输入5,返回请输入6:");
+                choice2 = input.nextInt();
+                input.nextLine();
+                JSONArray result = null;
+                if (choice2 == 4) {
+                    System.out.println("请输入要查询的国家名称:");
+                    String province = input.nextLine();
+                    result = QueryData.queryCountryData(province);
+                } else if (choice2 == 5) {
+                    System.out.println("请输入要查询的城市名称:");
+                    String province = input.nextLine();
+                    result = QueryData.queryCityData(province);
+                } else
+                    continue;
                 if (result != null && !result.isEmpty()) {
                     System.out.println("查询成功");
                     System.out.println(result);

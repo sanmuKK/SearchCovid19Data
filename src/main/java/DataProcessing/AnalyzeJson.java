@@ -42,10 +42,16 @@ public class AnalyzeJson {
     static int saveDataAll(JSONObject data) {
         try (Connection conn = ConnectMysql.getConnection();
              PreparedStatement ps = conn.prepareStatement("INSERT INTO " +
-                     "countries_covid(confirmed,recovered,deaths,country_name,population," +
-                     "sq_km_area,life_expectancy,elevation_in_meters,continent," +
-                     "abbreviation,location,iso,capital_city)" +
-                     "VALUE (?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+                             "countries_covid(confirmed,recovered,deaths,country_name,population," +
+                             "sq_km_area,life_expectancy,elevation_in_meters,continent," +
+                             "abbreviation,location,iso,capital_city) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) " +
+                             "ON DUPLICATE KEY UPDATE confirmed = VALUES (confirmed), recovered = VALUES (recovered)," +
+                             "deaths = VALUES (deaths), population = VALUES (population)," +
+                             "sq_km_area = VALUES (sq_km_area), life_expectancy = VALUES (life_expectancy)," +
+                             "elevation_in_meters = VALUES (elevation_in_meters), continent = VALUES (continent)," +
+                             "abbreviation = VALUES (abbreviation), location = VALUES (location), iso = VALUES (iso)," +
+                             "capital_city = VALUES (capital_city)",
+                     Statement.RETURN_GENERATED_KEYS)) {
             ps.setObject(1, data.getIntValue("confirmed"));
             ps.setObject(2, data.getIntValue("recovered"));
             ps.setObject(3, data.getIntValue("deaths"));
@@ -74,9 +80,10 @@ public class AnalyzeJson {
     static void saveDataProvince(JSONObject data, String provinceName, int countryId) {
         try (Connection conn = ConnectMysql.getConnection();
              PreparedStatement ps = conn.prepareStatement("INSERT INTO " +
-                     "provinces_covid(province_name,lat,long_data,confirmed,recovered," +
-                     "deaths,updated,country_id)" +
-                     "VALUE (?,?,?,?,?,?,?,?)")) {
+                     "provinces_covid(province_name,lat,long_data,confirmed,recovered,deaths,updated,country_id) " +
+                     "VALUES (?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE lat = VALUES (lat)," +
+                     "long_data = VALUES (long_data), confirmed = VALUES (confirmed), recovered = VALUES (recovered)," +
+                     "deaths = VALUES (deaths), updated = VALUES (updated)")) {
             ps.setObject(1, provinceName);
             ps.setObject(2, data.getString("lat"));
             ps.setObject(3, data.getString("long"));
