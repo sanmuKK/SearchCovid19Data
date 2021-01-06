@@ -20,7 +20,7 @@ public class QueryData {
             try (ResultSet rs = ps.executeQuery()) {
                 JSONArray provinces = new JSONArray();
                 while (rs.next()) {
-                    JSONObject province = new JSONObject();
+                    JSONObject province = new JSONObject(true);
                     province.put("countryName", rs.getString("country_name"));
                     province.put("countryConfirmed", rs.getInt("c.confirmed"));
                     province.put("countryRecovered", rs.getInt("c.recovered"));
@@ -50,25 +50,25 @@ public class QueryData {
                      "where country_name = ?")) {
             ps.setObject(1, countryName);
             try (ResultSet rs = ps.executeQuery()) {
-                JSONArray provinces = new JSONArray();
+                JSONArray countries = new JSONArray();
                 while (rs.next()) {
-                    JSONObject province = new JSONObject();
-                    province.put("countryName", rs.getString("country_name"));
-                    province.put("confirmed", rs.getInt("confirmed"));
-                    province.put("recovered", rs.getInt("recovered"));
-                    province.put("deaths", rs.getInt("deaths"));
-                    province.put("population", rs.getInt("population"));
-                    province.put("sq_km_area", rs.getInt("sq_km_area"));
-                    province.put("life_expectancy", rs.getString("life_expectancy"));
-                    province.put("elevation_in_meters", rs.getString("elevation_in_meters"));
-                    province.put("continent", rs.getString("continent"));
-                    province.put("abbreviation", rs.getString("abbreviation"));
-                    province.put("location", rs.getString("location"));
-                    province.put("iso", rs.getInt("iso"));
-                    province.put("capital_city", rs.getString("capital_city"));
-                    provinces.add(province);
+                    JSONObject country = new JSONObject(true);
+                    country.put("countryName", rs.getString("country_name"));
+                    country.put("confirmed", rs.getInt("confirmed"));
+                    country.put("recovered", rs.getInt("recovered"));
+                    country.put("deaths", rs.getInt("deaths"));
+                    country.put("population", rs.getInt("population"));
+                    country.put("sq_km_area", rs.getInt("sq_km_area"));
+                    country.put("life_expectancy", rs.getString("life_expectancy"));
+                    country.put("elevation_in_meters", rs.getString("elevation_in_meters"));
+                    country.put("continent", rs.getString("continent"));
+                    country.put("abbreviation", rs.getString("abbreviation"));
+                    country.put("location", rs.getString("location"));
+                    country.put("iso", rs.getInt("iso"));
+                    country.put("capital_city", rs.getString("capital_city"));
+                    countries.add(country);
                 }
-                return provinces;
+                return countries;
             }
         } catch (SQLException e) {
             e.printStackTrace();

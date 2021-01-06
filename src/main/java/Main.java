@@ -1,7 +1,9 @@
 import DataProcessing.AnalyzeJson;
 import DataProcessing.QueryData;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 import java.util.Scanner;
 
@@ -20,11 +22,11 @@ public class Main {
                 System.out.println("OK!");
             } else if (choice == 2) {
                 input.nextLine();
-                int choice2 = 0;
+                int choice2;
                 System.out.println("查询国家请输入4,查询城市请输入5,返回请输入6:");
                 choice2 = input.nextInt();
                 input.nextLine();
-                JSONArray result = null;
+                JSONArray result;
                 if (choice2 == 4) {
                     System.out.println("请输入要查询的国家名称:");
                     String province = input.nextLine();
@@ -37,7 +39,9 @@ public class Main {
                     continue;
                 if (result != null && !result.isEmpty()) {
                     System.out.println("查询成功");
-                    System.out.println(result);
+                    String prettyJsonResult = JSON.toJSONString(result, SerializerFeature.PrettyFormat,
+                            SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat);
+                    System.out.println(prettyJsonResult);
                 } else
                     System.out.println("查询失败");
             }
